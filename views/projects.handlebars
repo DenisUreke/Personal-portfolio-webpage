@@ -14,7 +14,7 @@
         <div class="project-{{id}}-img"><img src="{{imageLink}}" alt="{{alt}}"></div>
         <div class="project-{{id}}-description align-text-center">
             <div class="project-title">{{name}}</div>
-            {{description}}
+            <div class="description-projects">{{description}}</div>
             {{#if ../isAdmin}}
             <div class="button-holder">
                 <form action="/delete-project" method="POST">
