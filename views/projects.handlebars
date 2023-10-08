@@ -3,24 +3,37 @@
             id="home-sunset-picture"></div>
     <div class="main-page-icon"><i class="fas fa-briefcase color-pink"></i></div>
     {{#if isAdmin}}
-    <a href ="/insert-project">
-    <div class="main-page-icon"><i class="fas fa-briefcase color-pink"></i></div>
+    <a href="/insert-project">
+        <div class="main-page-icon"><i class="fas fa-briefcase color-pink"></i></div>
     </a>
     {{/if}}
     <div class="header-headline">my<div class="header-headline-bolded">PROJECTS</div>
     </div>
-<div class="grid-projects">
-    {{#each projects}}
-    <div class="project-{{id}}-img"><img src="{{imageLink}}" alt="{{alt}}"></div>
-    <div class="project-{{id}}-description align-text-center">
-        <div class="project-title">{{name}}</div>
-        {{description}}
+    <div class="grid-projects">
+        {{#each projects}}
+        <div class="project-{{id}}-img"><img src="{{imageLink}}" alt="{{alt}}"></div>
+        <div class="project-{{id}}-description align-text-center">
+            <div class="project-title">{{name}}</div>
+            {{description}}
+            {{#if ../isAdmin}}
+            <div class="button-holder">
+                <form action="/delete-project" method="POST">
+                    <input type="hidden" name="id" value="{{ id }}">
+                    <button class="delete-project-button">Delete</button>
+                </form>
+                <form action="/insert-project" method="POST">
+                    <input type="hidden" name="isUpdate" value="true">
+                    <input type="hidden" name="id" value="{{ id }}">
+                    <button class="update-project-button">Update</button>
+                </form>
+            </div>
+            {{/if}}
+        </div>
+        <div class="project-{{id}}-download center-all">
+            <a href="{{link}}">
+                <div class="more-info" title="More information about the project">click here for more information</div>
+            </a>
+        </div>
+        {{/each}}
     </div>
-    <div class="project-{{id}}-download center-all"> 
-        <a href="{{link}}">
-            <div class="more-info" title="More information about the project">click here for more information</div>
-        </a>
-    </div>
-    {{/each}}
-</div>
 </section>

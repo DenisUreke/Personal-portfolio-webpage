@@ -15,14 +15,6 @@
             <footer class="return-footer">
                 <a href="{{ project.p2_downloadLink }}" title="Download"><i class="fas fa-download"></i></a>
 
-                {{#if isAdmin }}
-                <form action="/delete-project" method="POST">
-                    <button type="submit" name="delete-post" id="delete-project">X</button>
-                    <input type="hidden" name="id" value="{{ project.id }}">
-                </form>
-                {{/if}}
-
-
                 <a href="/projects" title="Return"><i class="fas fa-arrow-left"></i></a>
             </footer>
         </div>

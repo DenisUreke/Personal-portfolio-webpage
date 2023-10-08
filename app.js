@@ -417,8 +417,6 @@ app.get('/project-description-:id', (req, res) => {
 
 app.post('/delete-project', isAdmin, async (req, res) =>{
     const projectID = req.body.id;
-    console.log('Project-ID in delete router',projectID);
-
 
     db.run("DELETE FROM Projects WHERE id = ?", [projectID], function(err) {
         if (err) {
@@ -445,7 +443,29 @@ app.get('/insert-project', isAuthenticated, (req, res) => {
 
 app.post('/insert-project', isAdmin, (req, res) =>{
     const isAdmin = req.session.user && req.session.user.isAdmin;
+    const update = req.body.isUpdate;
+    const projectID = req.body.id;
 
+    if(update == "true"){
+
+        db.get("SELECT * FROM Projects WHERE id = ?", [projectID], function(error, data){
+            if(error){
+                console.error("Error deleting project:", error);
+                res.status(500).send('Server Error');
+                return;
+            }         
+            else{
+                const model = {
+                    data,
+                    layout: 'adminLayout',
+                    isAdmin,
+                    update: true
+                };
+                res.render("update-project.handlebars", model)
+            }
+        })          
+    }
+    else{
     const {
         name,
         description,
@@ -459,7 +479,7 @@ app.post('/insert-project', isAdmin, (req, res) =>{
     } = req.body;
 
     const sql = `
-        INSERT INTO Projects(name, description, imageLink, alt, p2_firstWord, p2_secondWord, p2_thirdWord, p2_description, p2_downloadLink)
+        INSERT INTO Projects (name, description, imageLink, alt, p2_firstWord, p2_secondWord, p2_thirdWord, p2_description, p2_downloadLink)
         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
     `;
 
@@ -469,10 +489,54 @@ app.post('/insert-project', isAdmin, (req, res) =>{
             res.status(500).send("Internal Server Error");
             return;
         }
-
-        console.log(`Inserted data with ID: ${this.lastID}`);
+        
         res.redirect('/projects');
     });
+}
+
+});
+
+app.post('/update-project', isAdmin, (req, res) =>{
+    const isAdmin = req.session.user && req.session.user.isAdmin;
+    const projectID = req.body.id;
+    console.log('projectID = ',projectID); //REMOVE
+
+    const {
+        name,
+        description,
+        imageLink,
+        alt,
+        p2_firstWord,
+        p2_secondWord,
+        p2_thirdWord,
+        p2_description,
+        p2_downloadLink
+    } = req.body;
+    
+    const sql = `
+        UPDATE Projects
+        SET 
+            name = ?,
+            description = ?,
+            imageLink = ?,
+            alt = ?,
+            p2_firstWord = ?,
+            p2_secondWord = ?,
+            p2_thirdWord = ?,
+            p2_description = ?,
+            p2_downloadLink = ?
+        WHERE id = ?
+    `;
+    
+    db.run(sql, [name, description, imageLink, alt, p2_firstWord, p2_secondWord, p2_thirdWord, p2_description, p2_downloadLink, projectID], function(err) {
+        if (err) {
+            console.error("Error updating data:", err.message);
+            res.status(500).send("Internal Server Error");
+            return;
+        }
+        res.redirect('/projects');
+    });
+    
 });
 
 

@@ -595,6 +595,24 @@ textarea.input-field {
     text-align: left;
 
 }
+.update-project-button{
+    width: 10vw;
+    background-color: #9F496E;
+    color: white;
+}
+
+.delete-project-button{
+    width: 10vw;
+    background-color: #9F496E;
+    color: white;
+}
+
+.button-holder{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
 
 
 /*-------------------------------------------------*/
