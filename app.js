@@ -21,23 +21,23 @@ const db = initDb(); // Comment this away after steup
 
 const hbs = exphbs.create({
     helpers: {
-      when: function(operand_1, operator, operand_2, options) {
-        const operators = {
-         'eq': function(l,r) { return l == r; },
-         'eqORadm': function(l,r) { return l == r; },
-         'noteq': function(l,r) { return l != r; },
-         'gt': function(l,r) { return Number(l) > Number(r); },
-         'or': function(l,r) { return l || r; },
-         'and': function(l,r) { return l && r; },
-         '%': function(l,r) { return (l % r) === 0; }
-        };
-  
-        const result = operators[operator](operand_1, operand_2);
-        if (result) return options.fn(this);
-        else return options.inverse(this);
-      },
+        when: function (operand_1, operator, operand_2, options) {
+            const operators = {
+                'eq': function (l, r) { return l == r; },
+                'eqORadm': function (l, r) { return l == r; },
+                'noteq': function (l, r) { return l != r; },
+                'gt': function (l, r) { return Number(l) > Number(r); },
+                'or': function (l, r) { return l || r; },
+                'and': function (l, r) { return l && r; },
+                '%': function (l, r) { return (l % r) === 0; }
+            };
+
+            const result = operators[operator](operand_1, operand_2);
+            if (result) return options.fn(this);
+            else return options.inverse(this);
+        },
     },
-  });
+});
 
 app.engine('handlebars', hbs.engine);
 app.set('view engine', 'handlebars');
@@ -50,9 +50,9 @@ app.use(express.static('public'));
 //*********************************Session************************************ */
 
 app.use(session({
-    secret: 'yourSecretKey',   
-    resave: false,             
-    saveUninitialized: false,  
+    secret: 'yourSecretKey',
+    resave: false,
+    saveUninitialized: false,
     cookie: {
         maxAge: 1000 * 60 * 60 * 24
     }
@@ -244,7 +244,7 @@ app.get('/log-in', (req, res) => {
 app.get('/home', isAuthenticated, (req, res) => {
     const isAdmin = req.session.user && req.session.user.isAdmin;
     const currentPage = "home";
-    res.render('home', { layout: 'adminLayout', isAdmin, currentPage});
+    res.render('home', { layout: 'adminLayout', isAdmin, currentPage });
 });
 
 app.get('/about', isAuthenticated, (req, res) => {
@@ -415,10 +415,10 @@ app.get('/project-description-:id', (req, res) => {
     });
 });
 
-app.post('/delete-project', isAdmin, async (req, res) =>{
+app.post('/delete-project', isAdmin, async (req, res) => {
     const projectID = req.body.id;
 
-    db.run("DELETE FROM Projects WHERE id = ?", [projectID], function(err) {
+    db.run("DELETE FROM Projects WHERE id = ?", [projectID], function (err) {
         if (err) {
 
             console.error("Error deleting project:", err);
@@ -437,69 +437,70 @@ app.post('/delete-project', isAdmin, async (req, res) =>{
 
 app.get('/insert-project', isAuthenticated, (req, res) => {
     const isAdmin = req.session.user && req.session.user.isAdmin;
-        const currentPage = "projects";
+    const currentPage = "projects";
     res.render('insert-project', { layout: 'adminLayout', isAdmin, currentPage });
 });
 
-app.post('/insert-project', isAdmin, (req, res) =>{
+app.post('/insert-project', isAdmin, (req, res) => {
     const isAdmin = req.session.user && req.session.user.isAdmin;
+    const currentPage = "projects";
     const update = req.body.isUpdate;
     const projectID = req.body.id;
 
-    if(update == "true"){
+    if (update == "true") {
 
-        db.get("SELECT * FROM Projects WHERE id = ?", [projectID], function(error, data){
-            if(error){
+        db.get("SELECT * FROM Projects WHERE id = ?", [projectID], function (error, data) {
+            if (error) {
                 console.error("Error deleting project:", error);
                 res.status(500).send('Server Error');
                 return;
-            }         
-            else{
+            }
+            else {
                 const model = {
                     data,
                     layout: 'adminLayout',
                     isAdmin,
+                    currentPage,
                     update: true
                 };
                 res.render("update-project.handlebars", model)
             }
-        })          
+        })
     }
-    else{
-    const {
-        name,
-        description,
-        imageLink,
-        alt,
-        p2_firstWord,
-        p2_secondWord,
-        p2_thirdWord,
-        p2_description,
-        p2_downloadLink
-    } = req.body;
+    else {
+        const {
+            name,
+            description,
+            imageLink,
+            alt,
+            p2_firstWord,
+            p2_secondWord,
+            p2_thirdWord,
+            p2_description,
+            p2_downloadLink
+        } = req.body;
 
-    const sql = `
+        const sql = `
         INSERT INTO Projects (name, description, imageLink, alt, p2_firstWord, p2_secondWord, p2_thirdWord, p2_description, p2_downloadLink)
         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
     `;
 
-    db.run(sql, [name, description, imageLink, alt, p2_firstWord, p2_secondWord, p2_thirdWord, p2_description, p2_downloadLink], function(err) {
-        if (err) {
-            console.error("Error inserting data:", err.message);
-            res.status(500).send("Internal Server Error");
-            return;
-        }
-        
-        res.redirect('/projects');
-    });
-}
+        db.run(sql, [name, description, imageLink, alt, p2_firstWord, p2_secondWord, p2_thirdWord, p2_description, p2_downloadLink], function (err) {
+            if (err) {
+                console.error("Error inserting data:", err.message);
+                res.status(500).send("Internal Server Error");
+                return;
+            }
+
+            res.redirect('/projects');
+        });
+    }
 
 });
 
-app.post('/update-project', isAdmin, (req, res) =>{
-    const isAdmin = req.session.user && req.session.user.isAdmin;
+app.post('/update-project', isAdmin, (req, res) => {
     const projectID = req.body.id;
-    console.log('projectID = ',projectID); //REMOVE
+    console.log('projectID = ', projectID); //REMOVE
 
     const {
         name,
@@ -512,7 +513,7 @@ app.post('/update-project', isAdmin, (req, res) =>{
         p2_description,
         p2_downloadLink
     } = req.body;
-    
+
     const sql = `
         UPDATE Projects
         SET 
@@ -527,8 +528,8 @@ app.post('/update-project', isAdmin, (req, res) =>{
             p2_downloadLink = ?
         WHERE id = ?
     `;
-    
-    db.run(sql, [name, description, imageLink, alt, p2_firstWord, p2_secondWord, p2_thirdWord, p2_description, p2_downloadLink, projectID], function(err) {
+
+    db.run(sql, [name, description, imageLink, alt, p2_firstWord, p2_secondWord, p2_thirdWord, p2_description, p2_downloadLink, projectID], function (err) {
         if (err) {
             console.error("Error updating data:", err.message);
             res.status(500).send("Internal Server Error");
@@ -536,7 +537,7 @@ app.post('/update-project', isAdmin, (req, res) =>{
         }
         res.redirect('/projects');
     });
-    
+
 });
 
 
@@ -576,7 +577,7 @@ app.get('/forum', isAuthenticated, (req, res) => {
                 isAdmin,
                 logName: sessionName,
                 currentPage
-                
+
             }
             res.render("forum.handlebars", model);
             return;
@@ -603,9 +604,9 @@ app.post('/post-comment', isAuthenticated, async (req, res) => {
 });
 
 app.post('/delete-comment', isAuthenticated, async (req, res) => {
-    const commentId = req.body.id; 
+    const commentId = req.body.id;
 
-    db.run("DELETE FROM comments WHERE id = ?", [commentId], function(err) {
+    db.run("DELETE FROM comments WHERE id = ?", [commentId], function (err) {
         if (err) {
             console.error("Error deleting comment:", err);
             res.status(500).send('Server Error');
@@ -659,7 +660,7 @@ app.get('/find-poster', isAuthenticated, (req, res) => {
 //************************************Admin*********************************** */
 
 app.get('/admin', isAdmin, (req, res) => {
-    
+
     const isAdmin = req.session.user && req.session.user.isAdmin;
     const currentPage = "admin";
     res.render('admin-main-window', { layout: 'guestLayout', isAdmin, currentPage });

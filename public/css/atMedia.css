@@ -85,6 +85,14 @@
 
 @media (max-width: 1280px) {
 
+    .update-project-button{
+        width: 20vw;
+    }
+
+    .delete-project-button{
+        width: 20vw; 
+    }
+
     /*projects insert*/
     .insert-arrow{
         width: 90vw;
