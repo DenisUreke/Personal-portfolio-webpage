@@ -1,0 +1,30 @@
+<div class="container" id="background-container">
+    <div class="columns" id="columns-container">
+        <div class="column col-3 col-xl-4 col-lg-6 col-md-6 col-sm-12 col-xs-12" id="project-detail-container">
+            <div class="main-window-header-image">
+                <img src="{{ project.imageLink }}" alt="image of project" id="home-sunset-picture">
+            </div>
+
+            <div class="header-headline">
+                {{ project.p2_firstWord }}
+                <div class="header-headline-bolded">{{ project.p2_secondWord }}</div>{{ project.p2_thirdWord }}
+            </div>
+
+            <div class="project-content-desription">{{ project.p2_description }}</div>
+
+            <footer class="return-footer">
+                <a href="{{ project.p2_downloadLink }}" title="Download"><i class="fas fa-download"></i></a>
+
+                {{#if isAdmin }}
+                <form action="/delete-project" method="POST">
+                    <button type="submit" name="delete-post" id="delete-project">X</button>
+                    <input type="hidden" name="id" value="{{ project.id }}">
+                </form>
+                {{/if}}
+
+
+                <a href="/projects" title="Return"><i class="fas fa-arrow-left"></i></a>
+            </footer>
+        </div>
+    </div>
+</div>
