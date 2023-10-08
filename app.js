@@ -377,6 +377,7 @@ app.get('/projects', isAuthenticated, (req, res) => {
 });
 
 app.get('/project-description-:id', (req, res) => {
+
     const projectId = req.params.id;
     const isAdmin = req.session.user && req.session.user.isAdmin;
 
@@ -429,6 +430,42 @@ app.post('/delete-project', isAdmin, async (req, res) =>{
     });
 });
 
+app.get('/insert-project', isAuthenticated, (req, res) => {
+    const isAdmin = req.session.user && req.session.user.isAdmin;
+    res.render('insert-project', { layout: 'adminLayout', isAdmin });
+});
+
+app.post('/insert-project', isAdmin, (req, res) =>{
+    const isAdmin = req.session.user && req.session.user.isAdmin;
+
+    const {
+        name,
+        description,
+        imageLink,
+        alt,
+        p2_firstWord,
+        p2_secondWord,
+        p2_thirdWord,
+        p2_description,
+        p2_downloadLink
+    } = req.body;
+
+    const sql = `
+        INSERT INTO Projects(name, description, imageLink, alt, p2_firstWord, p2_secondWord, p2_thirdWord, p2_description, p2_downloadLink)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+    `;
+
+    db.run(sql, [name, description, imageLink, alt, p2_firstWord, p2_secondWord, p2_thirdWord, p2_description, p2_downloadLink], function(err) {
+        if (err) {
+            console.error("Error inserting data:", err.message);
+            res.status(500).send("Internal Server Error");
+            return;
+        }
+
+        console.log(`Inserted data with ID: ${this.lastID}`);
+        res.redirect('/projects');
+    });
+});
 
 
 //**************************************************************************** */
@@ -696,7 +733,7 @@ app.get('/pagination', async (req, res) => {
     const isAdmin = req.session.user && req.session.user.isAdmin;
 
     const actionType = req.query.actionType;
-    const total = parseInt(req.query.total); /*Only interesting when previous and next are used*/
+    const total = parseInt(req.query.total);
     let page;
     let limit;
     let selectedTable;

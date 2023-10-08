@@ -2,18 +2,25 @@
     <div class="main-window-header-image mirror-image"><img src="Img/purple-city.jpg" alt="Picture of a sunset in city"
             id="home-sunset-picture"></div>
     <div class="main-page-icon"><i class="fas fa-briefcase color-pink"></i></div>
+    {{#if isAdmin}}
+    <a href ="/insert-project">
+    <div class="main-page-icon"><i class="fas fa-briefcase color-pink"></i></div>
+    </a>
+    {{/if}}
     <div class="header-headline">my<div class="header-headline-bolded">PROJECTS</div>
     </div>
-    <div class="grid-projects">
-        {{#each projects}}
-        <div class="project-{{id}}-img"><img src="{{imageLink}}" alt="{{alt}}"></div>
-        <div class="project-{{id}}-description align-text-center">
-            <div class="project-title">{{name}}</div>
-            {{description}}
-        </div>
-        <div class="project-{{id}}-download center-all"> <a href="{{link}}">
-                <div class="more-info" title="More information about the project">click here for more information</div>
-            </a></div>
-        {{/each}}
+<div class="grid-projects">
+    {{#each projects}}
+    <div class="project-{{id}}-img"><img src="{{imageLink}}" alt="{{alt}}"></div>
+    <div class="project-{{id}}-description align-text-center">
+        <div class="project-title">{{name}}</div>
+        {{description}}
     </div>
+    <div class="project-{{id}}-download center-all"> 
+        <a href="{{link}}">
+            <div class="more-info" title="More information about the project">click here for more information</div>
+        </a>
+    </div>
+    {{/each}}
+</div>
 </section>

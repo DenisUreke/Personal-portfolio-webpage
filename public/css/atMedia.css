@@ -85,6 +85,23 @@
 
 @media (max-width: 1280px) {
 
+    /*projects insert*/
+    .insert-arrow{
+        width: 90vw;
+        margin-top: -1vh;
+        text-align: left;
+        font-size: clamp(0.5rem, 5vw, 5rem);
+    }
+
+    .form-container{
+        width: 70vw;
+    }
+
+    .input-field{
+        width: 50vw;
+        height: 5vh;
+    }
+
     #delete-project{
         width: 7.3vw;
         height: 5vh;

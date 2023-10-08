@@ -1,12 +1,13 @@
 /****************************************************************************************************/
 /**************************************Tables and Data***********************************************/
+
 const sqlite3 = require('sqlite3').verbose();
 
 function initDb() {
 
     const db = new sqlite3.Database('database.db');
 
-    createUserTable(() => {
+    createUserandProjectsTable(() => {
 
         createDownloadTable(() => {
 
@@ -23,21 +24,135 @@ function initDb() {
     return db;
 }
 
-/*----User----*/
-function createUserTable(callback) {
+function createUserandProjectsTable(callback) {
     const db = new sqlite3.Database('database.db');
 
-    db.run(`CREATE TABLE IF NOT EXISTS User (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    username TEXT UNIQUE,
-    email TEXT,
-    password TEXT,
-    isAdmin INTEGER DEFAULT 0,
-    registrationDate TEXT DEFAULT CURRENT_TIMESTAMP
-)`, (error) => {
+    /*Projects table*/
+    db.run(`CREATE TABLE IF NOT EXISTS Projects (
+        id INTEGER PRIMARY KEY,
+        name TEXT,
+        description TEXT,
+        imageLink TEXT,
+        alt TEXT,
+        link TEXT,
+        p2_firstWord TEXT,
+        p2_secondWord TEXT,
+        p2_thirdWord TEXT,
+        p2_description TEXT,
+        p2_downloadLink TEXT DEFAULT NULL
+    )`, (error) => {
         if (error) {
-            console.log("ERROR: ", error);
-        } else {
+            console.log("ERROR creating table Projects: ", error);
+            return;
+        } 
+
+        console.log("---> Table Projects created!");
+
+        const projectsData = [
+            {
+                "id": 1,
+                "name": "Tetris",
+                "description": "Crafted my first game, Tetris, using QT and C++. A monumental step in my programming journey. Score isn't implemented but it's working with a few \"minor\" bugs ehm.. features",
+                "imageLink": "img/tetris.jpg",
+                "alt": "Tetris game",
+                "link": "/project-description-1",
+                "p2_firstWord": "my",
+                "p2_secondWord": "TETRIS",
+                "p2_thirdWord": "game",
+                "p2_description": "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Obcaecati ex laudantium ab placeat ea voluptas, veritatis pariatur non ipsam aperiam unde quasi deleniti laboriosam consequatur repudiandae, cumque natus eius nostrum odit recusandae. Eos alias ex temporibus pariatur fugit perspiciatis porro similique consequuntur incidunt voluptatum ipsa rem blanditiis distinctio, quam quod veritatis pariatur non ipsam aperiam unde quasi deleniti laboriosam consequatur repudiandae?"
+            },
+            {
+                "id": 2,
+                "name": "Black-Jack",
+                "description": "Developed a dynamic Blackjack game, where players challenge a computer opponent. My second gaming creation.",
+                "imageLink": "img/cards.jpg",
+                "alt": "BlackJack game",
+                "link": "/project-description-2",
+                "p2_firstWord": "my",
+                "p2_secondWord": "Black-Jack",
+                "p2_thirdWord": "game",
+                "p2_description": "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Obcaecati ex laudantium ab placeat ea voluptas, veritatis pariatur non ipsam aperiam unde quasi deleniti laboriosam consequatur repudiandae, cumque natus eius nostrum odit recusandae. Eos alias ex temporibus pariatur fugit perspiciatis porro similique consequuntur incidunt voluptatum ipsa rem blanditiis distinctio, quam quod veritatis pariatur non ipsam aperiam unde quasi deleniti laboriosam consequatur repudiandae?"
+            },
+            {
+                "id": 3,
+                "name": "Math-tool",
+                "description": "Crafted a C++ terminal tool during my Discrete Math course. It efficiently executes the Euclidean algorithm and aids in identifying inverses for encryption math.",
+                "imageLink": "img/math.jpg",
+                "alt": "Math Tool",
+                "link": "/project-description-3",
+                "p2_firstWord": "my",
+                "p2_secondWord": "MATH",
+                "p2_thirdWord": "tool",
+                "p2_description": "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Obcaecati ex laudantium ab placeat ea voluptas, veritatis pariatur non ipsam aperiam unde quasi deleniti laboriosam consequatur repudiandae, cumque natus eius nostrum odit recusandae. Eos alias ex temporibus pariatur fugit perspiciatis porro similique consequuntur incidunt voluptatum ipsa rem blanditiis distinctio, quam quod veritatis pariatur non ipsam aperiam unde quasi deleniti laboriosam consequatur repudiandae?"
+            },
+            {
+                "id": 4,
+                "name": "CSS Animation",
+                "description": "My inaugural web project showcases original CSS art crafted by me. It's a work in progress - feel free to click the link and witness its evolution!",
+                "imageLink": "img/website.jpg",
+                "alt": "Globe and Web",
+                "link": "/project-description-4",
+                "p2_firstWord": "my",
+                "p2_secondWord": "CSS",
+                "p2_thirdWord": "projects",
+                "p2_description": "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Obcaecati ex laudantium ab placeat ea voluptas, veritatis pariatur non ipsam aperiam unde quasi deleniti laboriosam consequatur repudiandae, cumque natus eius nostrum odit recusandae. Eos alias ex temporibus pariatur fugit perspiciatis porro similique consequuntur incidunt voluptatum ipsa rem blanditiis distinctio, quam quod veritatis pariatur non ipsam aperiam unde quasi deleniti laboriosam consequatur repudiandae?"
+            },
+            {
+                "id": 5,
+                "name": "Visual-Sorting",
+                "description": "My early visual creation: an array of sorting algorithms on display, letting you visually experience the sorting process in action.",
+                "imageLink": "img/sorting.png",
+                "alt": "Graph sorted",
+                "link": "/project-description-5",
+                "p2_firstWord": "a",
+                "p2_secondWord": "VISUAL",
+                "p2_thirdWord": "sorter",
+                "p2_description": "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Obcaecati ex laudantium ab placeat ea voluptas, veritatis pariatur non ipsam aperiam unde quasi deleniti laboriosam consequatur repudiandae, cumque natus eius nostrum odit recusandae. Eos alias ex temporibus pariatur fugit perspiciatis porro similique consequuntur incidunt voluptatum ipsa rem blanditiis distinctio, quam quod veritatis pariatur non ipsam aperiam unde quasi deleniti laboriosam consequatur repudiandae?"
+            }
+        ];
+        
+        const insertAllProjectsSQL = `
+            INSERT INTO Projects 
+                (id, name, description, imageLink, alt, link, p2_firstWord, p2_secondWord, p2_thirdWord, p2_description) 
+            VALUES 
+                (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        `;
+
+        projectsData.forEach((project) => {
+            db.run(insertAllProjectsSQL, [
+                project.id,
+                project.name,
+                project.description,
+                project.imageLink,
+                project.alt,
+                project.link,
+                project.p2_firstWord,
+                project.p2_secondWord,
+                project.p2_thirdWord,
+                project.p2_description
+            ], (error) => {
+                if (error) {
+                    console.log("ERROR inserting project: ", error);
+                } else {
+                    console.log("---> Project inserted!");
+                }
+            });
+        });
+
+        /*User table*/
+        db.run(`CREATE TABLE IF NOT EXISTS User (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            username TEXT UNIQUE,
+            email TEXT,
+            password TEXT,
+            isAdmin INTEGER DEFAULT 0,
+            registrationDate TEXT DEFAULT CURRENT_TIMESTAMP
+        )`, (error) => {
+            if (error) {
+                console.log("ERROR: ", error);
+                return;
+            }
+
             console.log("---> Table User created!");
 
             const users = [
@@ -91,15 +206,14 @@ function createUserTable(callback) {
                     }
                 });
             });
-        }
 
+            callback();
+        });
     });
-    callback();
 
     db.close((err) => {
         if (err) {
             console.error('Error closing the database:', err.message);
-        } else {
         }
     });
 }
@@ -231,118 +345,6 @@ function createOtherTables(callback) {
         }
     });
 
-    /*----Projects----*/
-    db.run(`CREATE TABLE IF NOT EXISTS Projects (
-        id INTEGER PRIMARY KEY,
-        name TEXT,
-        description TEXT,
-        imageLink TEXT,
-        alt TEXT,
-        link TEXT,
-        p2_firstWord TEXT,
-        p2_secondWord TEXT,
-        p2_thirdWord TEXT,
-        p2_description TEXT,
-        p2_downloadLink TEXT DEFAULT NULL
-    )`, (error) => {
-        if (error) {
-            console.log("ERROR creating table Projects: ", error);
-        } else {
-            console.log("---> Table Projects created!");
-    
-            const projectsData = [
-                {
-                    "id": 1,
-                    "name": "Tetris",
-                    "description": "Crafted my first game, Tetris, using QT and C++. A monumental step in my programming journey. Score isn't implemented but it's working with a few \"minor\" bugs ehm.. features",
-                    "imageLink": "img/tetris.jpg",
-                    "alt": "Tetris game",
-                    "link": "/project-description-1",
-                    "p2_firstWord": "my",
-                    "p2_secondWord": "TETRIS",
-                    "p2_thirdWord": "game",
-                    "p2_description": "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Obcaecati ex laudantium ab placeat ea voluptas, veritatis pariatur non ipsam aperiam unde quasi deleniti laboriosam consequatur repudiandae, cumque natus eius nostrum odit recusandae. Eos alias ex temporibus pariatur fugit perspiciatis porro similique consequuntur incidunt voluptatum ipsa rem blanditiis distinctio, quam quod veritatis pariatur non ipsam aperiam unde quasi deleniti laboriosam consequatur repudiandae?"
-                },
-                {
-                    "id": 2,
-                    "name": "Black-Jack",
-                    "description": "Developed a dynamic Blackjack game, where players challenge a computer opponent. My second gaming creation.",
-                    "imageLink": "img/cards.jpg",
-                    "alt": "BlackJack game",
-                    "link": "/project-description-2",
-                    "p2_firstWord": "my",
-                    "p2_secondWord": "Black-Jack",
-                    "p2_thirdWord": "game",
-                    "p2_description": "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Obcaecati ex laudantium ab placeat ea voluptas, veritatis pariatur non ipsam aperiam unde quasi deleniti laboriosam consequatur repudiandae, cumque natus eius nostrum odit recusandae. Eos alias ex temporibus pariatur fugit perspiciatis porro similique consequuntur incidunt voluptatum ipsa rem blanditiis distinctio, quam quod veritatis pariatur non ipsam aperiam unde quasi deleniti laboriosam consequatur repudiandae?"
-                },
-                {
-                    "id": 3,
-                    "name": "Math-tool",
-                    "description": "Crafted a C++ terminal tool during my Discrete Math course. It efficiently executes the Euclidean algorithm and aids in identifying inverses for encryption math.",
-                    "imageLink": "img/math.jpg",
-                    "alt": "Math Tool",
-                    "link": "/project-description-3",
-                    "p2_firstWord": "my",
-                    "p2_secondWord": "MATH",
-                    "p2_thirdWord": "tool",
-                    "p2_description": "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Obcaecati ex laudantium ab placeat ea voluptas, veritatis pariatur non ipsam aperiam unde quasi deleniti laboriosam consequatur repudiandae, cumque natus eius nostrum odit recusandae. Eos alias ex temporibus pariatur fugit perspiciatis porro similique consequuntur incidunt voluptatum ipsa rem blanditiis distinctio, quam quod veritatis pariatur non ipsam aperiam unde quasi deleniti laboriosam consequatur repudiandae?"
-                },
-                {
-                    "id": 4,
-                    "name": "CSS Animation",
-                    "description": "My inaugural web project showcases original CSS art crafted by me. It's a work in progress - feel free to click the link and witness its evolution!",
-                    "imageLink": "img/website.jpg",
-                    "alt": "Globe and Web",
-                    "link": "/project-description-4",
-                    "p2_firstWord": "my",
-                    "p2_secondWord": "CSS",
-                    "p2_thirdWord": "projects",
-                    "p2_description": "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Obcaecati ex laudantium ab placeat ea voluptas, veritatis pariatur non ipsam aperiam unde quasi deleniti laboriosam consequatur repudiandae, cumque natus eius nostrum odit recusandae. Eos alias ex temporibus pariatur fugit perspiciatis porro similique consequuntur incidunt voluptatum ipsa rem blanditiis distinctio, quam quod veritatis pariatur non ipsam aperiam unde quasi deleniti laboriosam consequatur repudiandae?"
-                },
-                {
-                    "id": 5,
-                    "name": "Visual-Sorting",
-                    "description": "My early visual creation: an array of sorting algorithms on display, letting you visually experience the sorting process in action.",
-                    "imageLink": "img/sorting.png",
-                    "alt": "Graph sorted",
-                    "link": "/project-description-5",
-                    "p2_firstWord": "a",
-                    "p2_secondWord": "VISUAL",
-                    "p2_thirdWord": "sorter",
-                    "p2_description": "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Obcaecati ex laudantium ab placeat ea voluptas, veritatis pariatur non ipsam aperiam unde quasi deleniti laboriosam consequatur repudiandae, cumque natus eius nostrum odit recusandae. Eos alias ex temporibus pariatur fugit perspiciatis porro similique consequuntur incidunt voluptatum ipsa rem blanditiis distinctio, quam quod veritatis pariatur non ipsam aperiam unde quasi deleniti laboriosam consequatur repudiandae?"
-                }
-            ];
-    
-            const insertAllProjectsSQL = `
-                INSERT INTO Projects 
-                    (id, name, description, imageLink, alt, link, p2_firstWord, p2_secondWord, p2_thirdWord, p2_description) 
-                VALUES 
-                    (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-            `;
-    
-            // Loop through the data and insert it into the table
-            projectsData.forEach((project) => {
-                db.run(insertAllProjectsSQL, [
-                    project.id,
-                    project.name,
-                    project.description,
-                    project.imageLink,
-                    project.alt,
-                    project.link,
-                    project.p2_firstWord,
-                    project.p2_secondWord,
-                    project.p2_thirdWord,
-                    project.p2_description
-                ], (error) => {
-                    if (error) {
-                        console.log("ERROR inserting project: ", error);
-                    } else {
-                        console.log("---> Project inserted!");
-                    }
-                });
-            });
-        }
-    });
     callback();
 }
 
@@ -385,15 +387,40 @@ function createViews(callback) {
                     console.log("ERROR creating ProjectData: ", error);
                 } else {
                     console.log("---> View ProjectData created!");
-                    callback();
-                    // Close the database connection after all views are created
-                    db.close((err) => {
-                        if (err) {
-                            console.error('Error closing the database:', err.message);
+
+                    // After creating the second view, create the trigger
+                    db.run(`CREATE TRIGGER before_insert_projects
+                    BEFORE INSERT ON Projects
+                    BEGIN
+                      INSERT INTO Projects(id, name, description, imageLink, alt, link, p2_firstWord, p2_secondWord, p2_thirdWord, p2_description, p2_downloadLink)
+                      VALUES ((SELECT IFNULL(MAX(id),0) + 1 FROM Projects),
+                              NEW.name,
+                              NEW.description,
+                              NEW.imageLink,
+                              NEW.alt,
+                              '/project-description-' || (SELECT IFNULL(MAX(id),0) + 1 FROM Projects),
+                              NEW.p2_firstWord,
+                              NEW.p2_secondWord,
+                              NEW.p2_thirdWord,
+                              NEW.p2_description,
+                              NEW.p2_downloadLink);
+                      SELECT RAISE(IGNORE);
+                    END;`, (error) => {
+                        if (error) {
+                            console.log("ERROR creating before_insert_projects trigger: ", error);
                         } else {
+                            console.log("---> Trigger before_insert_projects created!");
+
+                            callback();
+
+                            // Close the database connection after all views and trigger are created
+                            db.close((err) => {
+                                if (err) {
+                                    console.error('Error closing the database:', err.message);
+                                }
+                            });
                         }
                     });
-
                 }
             });
         }

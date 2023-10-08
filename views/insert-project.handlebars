@@ -1,0 +1,46 @@
+<section class="column col-6 col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12" id="main-window-container">
+    <div class="main-window-header-image mirror-image">
+        <img src="Img/purple-city.jpg" alt="Picture of a sunset in city" id="home-sunset-picture">
+    </div>
+    <div class="main-page-icon"><i class="fas fa-briefcase color-pink"></i></div>
+    <div class="return-button">
+        <div class="insert-arrow">
+            <a href="/projects" title="return">
+            <i class="fas fa-arrow-left arrow insert-arrow" aria-label="Go to Projects page"></i>
+            </a>
+        </div>
+    </div>
+
+    <form action="/insert-project" method="post" class="form-container">
+
+        <label for="name">Name:</label>
+        <input type="text" name="name" class="input-field" required>
+
+        <label for="description">Description:</label>
+        <textarea name="description" class="input-field" required></textarea>
+
+        <label for="imageLink">Image Link:</label>
+        <input type="text" name="imageLink" class="input-field" required>
+
+        <label for="alt">Image Alt Text:</label>
+        <input type="text" name="alt" class="input-field" required>
+
+        <label for="p2_firstWord">Page 2 - First Word:</label>
+        <input type="text" name="p2_firstWord" class="input-field" required>
+
+        <label for="p2_secondWord">Page 2 - Second Word:</label>
+        <input type="text" name="p2_secondWord" class="input-field" required>
+
+        <label for="p2_thirdWord">Page 2 - Third Word:</label>
+        <input type="text" name="p2_thirdWord" class="input-field" required>
+
+        <label for="p2_description">Page 2 - Description:</label>
+        <textarea name="p2_description" class="input-field" required></textarea>
+
+        <label for="p2_downloadLink">Page 2 - Download Link:</label>
+        <input type="url" name="p2_downloadLink" class="input-field">
+
+        <input type="submit" class="project-submit" value="Upload Project">
+
+    </form>
+</section>
