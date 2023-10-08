@@ -243,27 +243,32 @@ app.get('/log-in', (req, res) => {
 
 app.get('/home', isAuthenticated, (req, res) => {
     const isAdmin = req.session.user && req.session.user.isAdmin;
-    res.render('home', { layout: 'adminLayout', isAdmin });
+    const currentPage = "home";
+    res.render('home', { layout: 'adminLayout', isAdmin, currentPage});
 });
 
 app.get('/about', isAuthenticated, (req, res) => {
     const isAdmin = req.session.user && req.session.user.isAdmin;
-    res.render('about', { layout: 'adminLayout', isAdmin });
+    const currentPage = "about";
+    res.render('about', { layout: 'adminLayout', isAdmin, currentPage });
 });
 
 app.get('/contactME', isAuthenticated, (req, res) => {
     const isAdmin = req.session.user && req.session.user.isAdmin;
-    res.render('contact-information', { layout: 'adminLayout', isAdmin });
+    const currentPage = "about";
+    res.render('contact-information', { layout: 'adminLayout', isAdmin, currentPage });
 });
 
 app.get('/experience', isAuthenticated, (req, res) => {
     const isAdmin = req.session.user && req.session.user.isAdmin;
-    res.render('experience', { layout: 'adminLayout', isAdmin });
+    const currentPage = "experience";
+    res.render('experience', { layout: 'adminLayout', isAdmin, currentPage });
 });
 
 app.get('/holder', isAuthenticated, (req, res) => {
     const isAdmin = req.session.user && req.session.user.isAdmin;
-    res.render('holder', { layout: 'adminLayout', isAdmin });
+    const currentPage = "experience";
+    res.render('holder', { layout: 'adminLayout', isAdmin, currentPage });
 });
 
 //**************************************************************************** */
@@ -353,6 +358,7 @@ app.post('/send-message', (req, res) => {
 
 app.get('/projects', isAuthenticated, (req, res) => {
     const isAdmin = req.session.user && req.session.user.isAdmin;
+    const currentPage = "projects";
 
     db.all("SELECT * FROM Projects", function (error, mystuff) {
         if (error) {
@@ -369,7 +375,8 @@ app.get('/projects', isAuthenticated, (req, res) => {
                 theError: "",
                 projects: mystuff,
                 layout: 'adminLayout',
-                isAdmin
+                isAdmin,
+                currentPage
             }
             res.render("projects.handlebars", model)
         }
@@ -432,7 +439,8 @@ app.post('/delete-project', isAdmin, async (req, res) =>{
 
 app.get('/insert-project', isAuthenticated, (req, res) => {
     const isAdmin = req.session.user && req.session.user.isAdmin;
-    res.render('insert-project', { layout: 'adminLayout', isAdmin });
+        const currentPage = "projects";
+    res.render('insert-project', { layout: 'adminLayout', isAdmin, currentPage });
 });
 
 app.post('/insert-project', isAdmin, (req, res) =>{
@@ -474,6 +482,7 @@ app.post('/insert-project', isAdmin, (req, res) =>{
 app.get('/forum', isAuthenticated, (req, res) => {
     const isAdmin = req.session.user && req.session.user.isAdmin;
     const sessionName = req.session.user.username;
+    const currentPage = "forum";
 
     const query = `
     SELECT *
@@ -502,6 +511,8 @@ app.get('/forum', isAuthenticated, (req, res) => {
                 comments,
                 isAdmin,
                 logName: sessionName,
+                currentPage
+                
             }
             res.render("forum.handlebars", model);
             return;
@@ -586,7 +597,8 @@ app.get('/find-poster', isAuthenticated, (req, res) => {
 app.get('/admin', isAdmin, (req, res) => {
     
     const isAdmin = req.session.user && req.session.user.isAdmin;
-    res.render('admin-main-window', { layout: 'guestLayout', isAdmin });
+    const currentPage = "admin";
+    res.render('admin-main-window', { layout: 'guestLayout', isAdmin, currentPage });
 });
 
 app.post('/middleware-run', isAdmin, (req, res, next) => {
