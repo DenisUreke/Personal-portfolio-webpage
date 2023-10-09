@@ -595,16 +595,17 @@ textarea.input-field {
     text-align: left;
 
 }
-.update-project-button{
-    width: 10vw;
+.update-project-button, .delete-project-button{
+    width: 8vw;
     background-color: #9F496E;
     color: white;
+    transition-duration: 0.3s;
 }
 
-.delete-project-button{
-    width: 10vw;
-    background-color: #9F496E;
-    color: white;
+.update-project-button:hover, .delete-project-button:hover {
+    cursor: pointer;
+    background-color: white;
+    color: #9F496E;
 }
 
 .button-holder{
@@ -612,10 +613,27 @@ textarea.input-field {
     flex-direction: row;
     align-items: center;
     justify-content: center;
+    gap: 0.3vw;
 }
 
 .description-projects{
     width:100%
+}
+#icon-upload{
+    transition-duration: 0.3s;
+}
+
+#icon-upload:hover{
+    color:white
+}
+
+.project-submit{
+    transition-duration: 0.3s;
+}
+
+.project-submit:hover{
+    background-color: white;
+    color: #9F496E;
 }
 
 /*-------------------------------------------------*/
